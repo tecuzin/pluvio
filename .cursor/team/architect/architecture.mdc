@@ -1,0 +1,241 @@
+---
+description: Architecture de l'application Pluvio
+alwaysApply: true
+---
+
+# Architecture de l'Application Pluvio
+
+## Vue d'ensemble
+
+Application de logging quotidien de la pluviométrie avec architecture modulaire et évolutive.
+
+## Principes Architecturaux
+
+### Clean Architecture
+
+- **Séparation des responsabilités** : Chaque couche a une responsabilité unique et claire
+- **Indépendance des frameworks** : Le code métier ne dépend pas des frameworks
+- **Testabilité** : Chaque composant peut être testé indépendamment
+- **Indépendance de l'UI** : L'interface peut changer sans affecter le code métier
+- **Indépendance de la base de données** : Le stockage peut être changé sans affecter le reste
+
+### Clean Code
+
+- **Noms explicites** : Variables, fonctions et classes avec des noms qui expriment leur intention
+- **Fonctions courtes** : Une fonction = une responsabilité
+- **Pas de duplication** : DRY (Don't Repeat Yourself)
+- **Commentaires utiles** : Expliquer le "pourquoi", pas le "comment"
+- **Formatage cohérent** : Code uniforme dans tout le projet
+
+## Structure des Couches
+
+```
+┌─────────────────────────────────────┐
+│         Presentation Layer          │
+│    (UI Components, Forms, Views)    │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│        Application Layer             │
+│   (Use Cases, Business Logic)        │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│          Domain Layer                │
+│   (Entities, Value Objects, Rules)  │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│      Infrastructure Layer            │
+│  (Storage, APIs, External Services)  │
+└─────────────────────────────────────┘
+```
+
+## Couches Détaillées
+
+### 1. Domain Layer (Cœur Métier)
+
+**Responsabilités :**
+- Définir les entités métier (RainfallEntry, etc.)
+- Définir les règles de validation métier
+- Définir les interfaces des repositories (abstractions)
+
+**Exemples :**
+- `RainfallEntry` : Entité représentant un enregistrement de pluie
+- `IRainfallRepository` : Interface pour le stockage
+- `RainfallValidator` : Validation des règles métier
+
+**Règles :**
+- Aucune dépendance vers les autres couches
+- Pas de frameworks externes
+- Code pur, testable unitairement
+
+### 2. Application Layer (Cas d'Usage)
+
+**Responsabilités :**
+- Orchestrer les opérations métier
+- Coordonner entre domain et infrastructure
+- Gérer les transactions et la logique applicative
+
+**Exemples :**
+- `LogRainfallUseCase` : Cas d'usage pour enregistrer une pluviométrie
+- `GetRainfallStatsUseCase` : Cas d'usage pour obtenir des statistiques
+- `ExportRainfallDataUseCase` : Cas d'usage pour exporter les données
+
+**Règles :**
+- Dépend uniquement de la couche Domain
+- Contient la logique applicative (pas métier)
+- Peut utiliser des services de l'infrastructure via des interfaces
+
+### 3. Infrastructure Layer (Implémentations)
+
+**Responsabilités :**
+- Implémenter les repositories (base de données, fichiers, APIs)
+- Gérer les communications externes
+- Implémenter les services techniques
+
+**Exemples :**
+- `LocalStorageRainfallRepository` : Stockage local
+- `FileSystemRainfallRepository` : Stockage fichier
+- `APIRainfallRepository` : Stockage via API
+
+**Règles :**
+- Implémente les interfaces définies dans Domain
+- Peut utiliser des frameworks et bibliothèques externes
+- Isolé du reste de l'application
+
+### 4. Presentation Layer (Interface Utilisateur)
+
+**Responsabilités :**
+- Afficher les données à l'utilisateur
+- Capturer les interactions utilisateur
+- Formater les données pour l'affichage
+
+**Exemples :**
+- `RainfallForm` : Formulaire d'enregistrement
+- `RainfallList` : Liste des enregistrements
+- `RainfallChart` : Graphiques de visualisation
+
+**Règles :**
+- Dépend de l'Application Layer (use cases)
+- Ne contient pas de logique métier
+- Peut utiliser des frameworks UI (React, Vue, etc.)
+
+## Flux de Données
+
+### Enregistrement d'une pluviométrie
+
+```
+User Input (Form)
+    ↓
+Presentation Layer (RainfallForm)
+    ↓
+Application Layer (LogRainfallUseCase)
+    ↓
+Domain Layer (RainfallEntry + Validation)
+    ↓
+Infrastructure Layer (RainfallRepository.save)
+    ↓
+Storage (LocalStorage/File/API)
+```
+
+### Récupération des données
+
+```
+User Request (View)
+    ↓
+Presentation Layer (RainfallList)
+    ↓
+Application Layer (GetRainfallByDateRangeUseCase)
+    ↓
+Infrastructure Layer (RainfallRepository.findByDateRange)
+    ↓
+Storage (LocalStorage/File/API)
+    ↓
+Domain Layer (RainfallEntry[])
+    ↓
+Application Layer (Format for display)
+    ↓
+Presentation Layer (Display)
+```
+
+## Choix Technologiques
+
+### À Définir
+
+- **Langage/Framework Frontend** : React, Vue, Angular, ou autre ?
+- **Langage Backend** : Node.js, Python, ou autre ?
+- **Stockage** : LocalStorage, IndexedDB, Fichiers JSON, Base de données ?
+- **Tests** : Jest, Vitest, Playwright, Cypress ?
+- **Build Tool** : Vite, Webpack, ou autre ?
+
+### Critères de Sélection
+
+1. **Simplicité** : Facile à comprendre et maintenir
+2. **Performance** : Répond aux besoins de performance
+3. **Écosystème** : Bon support et communauté
+4. **Testabilité** : Facile à tester
+5. **Évolutivité** : Peut grandir avec le projet
+
+## Dépendances
+
+### Dépendances Externes (à définir)
+
+- Framework UI (si nécessaire)
+- Bibliothèque de validation
+- Bibliothèque de dates
+- Bibliothèque de graphiques
+- Outils de test
+
+### Gestion des Dépendances
+
+- Utiliser un gestionnaire de paquets (npm, yarn, pip, etc.)
+- Documenter toutes les dépendances
+- Maintenir les versions à jour
+- Éviter les dépendances inutiles
+
+## Évolutivité
+
+### Extensions Futures Possibles
+
+- Support multi-utilisateurs
+- Synchronisation cloud
+- Notifications et rappels
+- Export vers différents formats
+- Intégration avec APIs météo
+- Analyse prédictive
+- Application mobile
+
+### Architecture Évolutive
+
+- Interfaces clairement définies pour faciliter les extensions
+- Injection de dépendances pour la flexibilité
+- Configuration externalisée
+- Plugins/modules pour nouvelles fonctionnalités
+
+## Sécurité
+
+### Considérations
+
+- Validation de toutes les entrées utilisateur
+- Sanitisation des données
+- Protection contre les injections
+- Gestion sécurisée des données sensibles
+- Authentification/authorization (si multi-utilisateurs)
+
+## Performance
+
+### Optimisations
+
+- Lazy loading des données
+- Pagination pour grandes listes
+- Mise en cache des calculs
+- Optimisation des requêtes
+- Compression des données si nécessaire
+
+## Documentation
+
+- Chaque couche doit être documentée
+- Les interfaces doivent avoir des JSDoc/commentaires
+- Les cas d'usage doivent être documentés
+- Les décisions architecturales doivent être tracées dans le team-log.md

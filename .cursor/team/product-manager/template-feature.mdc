@@ -1,0 +1,83 @@
+---
+feature: [Nom de la fonctionnalité]
+date: [YYYY-MM-DD]
+priority: [high|medium|low]
+status: [draft|approved|in-progress|completed]
+---
+
+# Règles de Fonctionnalité : [Nom]
+
+## Description
+
+[Description claire et concise de la fonctionnalité]
+
+## Objectifs Métier
+
+- [Objectif 1]
+- [Objectif 2]
+- [Objectif 3]
+
+## Cas d'Usage
+
+### Cas d'usage 1 : [Titre]
+**Acteur** : [Qui]
+**Préconditions** : [Conditions requises]
+**Scénario** :
+1. [Étape 1]
+2. [Étape 2]
+3. [Étape 3]
+**Résultat attendu** : [Ce qui doit se passer]
+
+### Cas d'usage 2 : [Titre]
+[Idem]
+
+## Contraintes
+
+### Techniques
+- [Contrainte technique 1]
+- [Contrainte technique 2]
+
+### Métier
+- [Contrainte métier 1]
+- [Contrainte métier 2]
+
+### Temps/Ressources
+- [Contrainte de temps ou ressources]
+
+## Critères d'Acceptation
+
+- [ ] [Critère 1 - vérifiable et mesurable]
+- [ ] [Critère 2]
+- [ ] [Critère 3]
+
+## Métriques de Succès
+
+- **Métrique 1** : [Description] - Objectif : [Valeur cible]
+- **Métrique 2** : [Description] - Objectif : [Valeur cible]
+
+## Spécifications Techniques
+
+### Données
+- [Structure de données requise]
+- [Validations nécessaires]
+
+### Interface Utilisateur
+- [Éléments UI requis]
+- [Comportements attendus]
+
+### Performance
+- [Exigences de performance]
+
+## Dépendances
+
+- [Fonctionnalité ou composant requis]
+- [Blocage potentiel]
+
+## Notes Additionnelles
+
+[Informations complémentaires, questions ouvertes, etc.]
+
+## Historique
+
+- [Date] - Création du document
+- [Date] - [Modification et raison]
