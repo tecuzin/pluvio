@@ -1,0 +1,103 @@
+---
+description: Patterns pour les APIs et fonctions de manipulation de données
+globs: **/*.{ts,js,py}
+alwaysApply: false
+---
+
+# Patterns API - Pluviométrie
+
+## Fonctions de logging
+
+### Ajouter un enregistrement
+
+```typescript
+// ✅ BON
+async function logRainfall(entry: RainfallEntry): Promise<RainfallEntry> {
+  validateRainfallEntry(entry);
+  return await saveRainfallEntry(entry);
+}
+
+// ❌ MAUVAIS
+function add(data: any) {
+  // Pas de validation, type any
+}
+```
+
+### Récupérer les données
+
+```typescript
+// ✅ BON
+async function getRainfallByDateRange(
+  startDate: Date,
+  endDate: Date,
+  location?: string
+): Promise<RainfallEntry[]> {
+  validateDateRange(startDate, endDate);
+  return await fetchRainfallEntries({ startDate, endDate, location });
+}
+
+// ❌ MAUVAIS
+function get(start: any, end: any) {
+  // Pas de validation, paramètres non typés
+}
+```
+
+## Validation
+
+Toujours valider avant de sauvegarder :
+
+```typescript
+function validateRainfallEntry(entry: RainfallEntry): void {
+  if (entry.amount < 0) {
+    throw new Error("La quantité de pluie ne peut pas être négative");
+  }
+  if (!entry.date || isNaN(new Date(entry.date).getTime())) {
+    throw new Error("Date invalide");
+  }
+  if (entry.amount > 1000) {
+    throw new Error("Valeur suspecte : vérifier la quantité de pluie");
+  }
+}
+```
+
+## Gestion d'erreurs
+
+```typescript
+// ✅ BON
+try {
+  await logRainfall(entry);
+} catch (error) {
+  logger.error("Erreur lors de l'enregistrement", { error, entry });
+  throw new RainfallLogError("Impossible d'enregistrer la pluviométrie", {
+    cause: error
+  });
+}
+
+// ❌ MAUVAIS
+try {
+  await logRainfall(entry);
+} catch (e) {
+  // Erreur silencieuse
+}
+```
+
+## Calculs et statistiques
+
+```typescript
+// Calculer la moyenne mensuelle
+function calculateMonthlyAverage(
+  entries: RainfallEntry[],
+  month: number,
+  year: number
+): number {
+  const monthlyEntries = entries.filter(entry => {
+    const date = new Date(entry.date);
+    return date.getMonth() === month && date.getFullYear() === year;
+  });
+  
+  if (monthlyEntries.length === 0) return 0;
+  
+  const total = monthlyEntries.reduce((sum, entry) => sum + entry.amount, 0);
+  return total / monthlyEntries.length;
+}
+```

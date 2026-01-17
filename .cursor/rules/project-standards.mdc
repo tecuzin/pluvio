@@ -1,0 +1,39 @@
+---
+description: Standards généraux du projet de logging de pluviométrie
+alwaysApply: true
+---
+
+# Standards du Projet Pluvio
+
+## Vue d'ensemble
+Application de logging quotidien de la pluviométrie permettant de suivre et analyser les précipitations.
+
+## Principes généraux
+
+- **Clarté** : Code lisible et bien documenté
+- **Cohérence** : Respecter les conventions établies
+- **Validation** : Toujours valider les données d'entrée (dates, quantités de pluie)
+- **Erreurs** : Gestion d'erreurs explicite avec messages clairs
+- **Tests** : Écrire des tests pour les fonctionnalités critiques
+
+## Structure de données
+
+Les données de pluviométrie doivent inclure :
+- Date (format ISO 8601 ou format local cohérent)
+- Quantité de pluie (en mm, valeur numérique positive)
+- Localisation (optionnelle mais recommandée)
+- Notes/métadonnées (optionnelles)
+
+## Conventions de nommage
+
+- Variables : camelCase
+- Fonctions : camelCase avec verbes d'action (ex: `logRainfall`, `getDailyRainfall`)
+- Classes : PascalCase
+- Fichiers : kebab-case ou camelCase selon le contexte
+- Constantes : UPPER_SNAKE_CASE
+
+## Validation des données
+
+- Les quantités de pluie doivent être des nombres positifs (0 ou plus)
+- Les dates doivent être valides et dans un format cohérent
+- Gérer les cas limites (valeurs nulles, dates futures, etc.)

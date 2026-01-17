@@ -1,0 +1,86 @@
+---
+description: Patterns pour l'interface utilisateur de l'application
+globs: **/*.{tsx,jsx,vue,html}
+alwaysApply: false
+---
+
+# Patterns UI - Application Pluviométrie
+
+## Formulaire d'enregistrement
+
+### Structure recommandée
+
+```tsx
+// ✅ BON
+function RainfallForm({ onSubmit }: { onSubmit: (entry: RainfallEntry) => void }) {
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [amount, setAmount] = useState('');
+  const [location, setLocation] = useState('');
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const entry: RainfallEntry = {
+      date,
+      amount: parseFloat(amount),
+      location: location || undefined
+    };
+    onSubmit(entry);
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Date:
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+      </label>
+      <label>
+        Quantité (mm):
+        <input
+          type="number"
+          step="0.1"
+          min="0"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          required
+        />
+      </label>
+      {/* ... */}
+    </form>
+  );
+}
+```
+
+## Affichage des données
+
+### Liste des enregistrements
+
+- Afficher la date dans un format lisible
+- Afficher la quantité avec l'unité (mm)
+- Indiquer visuellement les jours sans pluie (0 mm)
+- Permettre le tri par date (plus récent d'abord par défaut)
+
+### Graphiques et visualisations
+
+- Utiliser des graphiques en barres pour les données quotidiennes
+- Graphiques linéaires pour les tendances sur plusieurs jours
+- Graphiques en secteurs pour les totaux mensuels
+- Toujours inclure les axes avec labels et unités
+
+## Messages utilisateur
+
+- Confirmer l'enregistrement : "Pluviométrie enregistrée avec succès"
+- Erreurs claires : "La quantité doit être un nombre positif"
+- États de chargement : Afficher un indicateur pendant les opérations async
+- Données vides : "Aucun enregistrement pour cette période"
+
+## Accessibilité
+
+- Labels explicites pour tous les champs
+- Messages d'erreur associés aux champs concernés
+- Contraste suffisant pour la lisibilité
+- Support clavier complet

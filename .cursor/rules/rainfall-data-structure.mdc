@@ -1,0 +1,55 @@
+---
+description: Structure de données et modèles pour la pluviométrie
+alwaysApply: true
+---
+
+# Structure de Données - Pluviométrie
+
+## Modèle de données principal
+
+### Enregistrement quotidien de pluie
+
+```typescript
+interface RainfallEntry {
+  date: Date | string; // Date de l'enregistrement
+  amount: number;      // Quantité en millimètres (mm)
+  location?: string;   // Localisation (optionnelle)
+  notes?: string;      // Notes additionnelles
+  timestamp?: Date;    // Horodatage de l'enregistrement
+}
+```
+
+### Validation
+
+- `amount` : Doit être un nombre >= 0
+- `date` : Doit être une date valide
+- `location` : Chaîne de caractères non vide si fournie
+- `notes` : Texte libre optionnel
+
+## Formats de date
+
+- Utiliser ISO 8601 pour le stockage : `YYYY-MM-DD` ou `YYYY-MM-DDTHH:mm:ssZ`
+- Afficher les dates dans le format local de l'utilisateur
+- Gérer les fuseaux horaires de manière cohérente
+
+## Unités
+
+- **Unité principale** : millimètres (mm)
+- Toujours spécifier l'unité dans les labels et la documentation
+- Convertir si nécessaire (1 mm = 0.03937 pouces)
+
+## Exemples de données valides
+
+```typescript
+// Enregistrement minimal
+{ date: "2024-01-15", amount: 5.2 }
+
+// Enregistrement complet
+{
+  date: "2024-01-15",
+  amount: 12.5,
+  location: "Paris, France",
+  notes: "Pluie continue toute la journée",
+  timestamp: new Date()
+}
+```
