@@ -203,3 +203,28 @@ L'application peut maintenant être déployée sans installer de dépendances su
 - `k8s/` : Manifests Kubernetes
 - `scripts/` : Scripts d'automatisation
 - `README-DOCKER.md` : Documentation Docker/Kubernetes
+
+---
+
+### 2026-01-17 - CI/Déploiement - Déploiement réussi dans Minikube
+
+**Contexte :**
+Déploiement final de l'application Pluvio dans Minikube après configuration Docker.
+
+**Décision/Action :**
+- Docker Desktop installé et configuré
+- Minikube démarré avec succès
+- Images Docker construites (production et développement)
+- Application déployée dans Kubernetes avec 2 replicas
+- Service LoadBalancer créé et accessible
+- Script `start-docker.sh` créé pour faciliter le démarrage de Docker
+
+**Impact :**
+L'application est maintenant déployée et accessible via Minikube. Tous les composants sont opérationnels :
+- Déploiement Kubernetes fonctionnel
+- Service exposé et accessible
+- Architecture complète en place
+
+**Références :**
+- `k8s/deployment.yaml` : Déploiement Kubernetes
+- `scripts/start-docker.sh` : Script de démarrage Docker
