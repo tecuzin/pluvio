@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pluvio-dev
+  labels:
+    app: pluvio-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pluvio-dev
+  template:
+    metadata:
+      labels:
+        app: pluvio-dev
+    spec:
+      containers:
+      - name: pluvio-dev
+        image: pluvio-dev:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: app-volume
+          mountPath: /app
+        - name: node-modules
+          mountPath: /app/node_modules
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: app-volume
+        hostPath:
+          path: /tmp/pluvio
+          type: DirectoryOrCreate
+      - name: node-modules
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pluvio-dev-service
+spec:
+  selector:
+    app: pluvio-dev
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+  type: NodePort

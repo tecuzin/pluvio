@@ -1,0 +1,205 @@
+---
+feature: Saisie quotidienne et visualisation de pluviométrie
+date: 2026-01-17
+priority: high
+status: draft
+---
+
+# Règles de Fonctionnalité : Saisie Quotidienne et Visualisation de Pluviométrie
+
+## Description
+
+Application permettant de saisir quotidiennement la date et la quantité de pluie (en mm), de stocker ces données dans une base SQLite, et d'afficher un tableau des saisies ainsi qu'un graphique pour visualiser l'évolution.
+
+## Objectifs Métier
+
+- Permettre un suivi quotidien simple et rapide de la pluviométrie
+- Conserver un historique des données pour analyse
+- Visualiser les données de manière claire (tableau et graphique)
+- Faciliter la saisie avec une interface intuitive
+
+## Cas d'Usage
+
+### Cas d'usage 1 : Saisir une nouvelle mesure de pluie
+**Acteur** : Utilisateur  
+**Préconditions** : Application lancée et accessible  
+**Scénario** :
+1. L'utilisateur ouvre l'application
+2. L'utilisateur accède au formulaire de saisie
+3. L'utilisateur sélectionne ou saisit la date (par défaut : date du jour)
+4. L'utilisateur saisit la quantité de pluie en mm (nombre décimal positif)
+5. L'utilisateur valide la saisie
+6. Les données sont enregistrées dans SQLite
+7. Le tableau et le graphique sont mis à jour automatiquement
+
+**Résultat attendu** : 
+- La nouvelle mesure apparaît dans le tableau
+- Le graphique se met à jour avec le nouveau point
+- Un message de confirmation s'affiche
+- Les données sont persistées en base
+
+### Cas d'usage 2 : Consulter l'historique des mesures
+**Acteur** : Utilisateur  
+**Préconditions** : Au moins une mesure enregistrée  
+**Scénario** :
+1. L'utilisateur ouvre l'application
+2. L'utilisateur consulte le tableau des saisies
+3. Le tableau affiche toutes les mesures triées par date (plus récentes en premier)
+4. L'utilisateur peut voir la date, la quantité en mm pour chaque enregistrement
+
+**Résultat attendu** : 
+- Le tableau affiche toutes les mesures avec date et quantité
+- Les données sont triées par date décroissante
+- L'affichage est clair et lisible
+
+### Cas d'usage 3 : Visualiser les données sur un graphique
+**Acteur** : Utilisateur  
+**Préconditions** : Au moins une mesure enregistrée  
+**Scénario** :
+1. L'utilisateur ouvre l'application
+2. L'utilisateur consulte la section graphique
+3. Le graphique affiche l'évolution de la pluviométrie dans le temps
+4. L'axe X représente les dates
+5. L'axe Y représente les quantités en mm
+
+**Résultat attendu** : 
+- Graphique lisible avec axes labellés
+- Points ou barres représentant chaque mesure
+- Évolution temporelle visible
+
+### Cas d'usage 4 : Saisir une mesure pour une date passée
+**Acteur** : Utilisateur  
+**Préconditions** : Application lancée  
+**Scénario** :
+1. L'utilisateur ouvre le formulaire de saisie
+2. L'utilisateur modifie la date pour sélectionner une date passée
+3. L'utilisateur saisit la quantité de pluie
+4. L'utilisateur valide
+
+**Résultat attendu** : 
+- La mesure est enregistrée avec la date sélectionnée
+- Le tableau et le graphique sont mis à jour
+- La mesure apparaît à la bonne position chronologique
+
+### Cas d'usage 5 : Saisir 0 mm de pluie (jour sans pluie)
+**Acteur** : Utilisateur  
+**Préconditions** : Application lancée  
+**Scénario** :
+1. L'utilisateur saisit une date
+2. L'utilisateur saisit 0 mm (ou laisse 0 par défaut)
+3. L'utilisateur valide
+
+**Résultat attendu** : 
+- La mesure 0 mm est enregistrée
+- Elle apparaît dans le tableau
+- Elle apparaît sur le graphique (point à 0)
+
+## Contraintes
+
+### Techniques
+- Base de données : SQLite (fichier local)
+- Stockage : Fichier SQLite dans le répertoire de l'application
+- Format de date : ISO 8601 (YYYY-MM-DD) pour le stockage, format local pour l'affichage
+- Quantité : Nombre décimal (float) en millimètres, valeur >= 0
+- Performance : L'application doit rester réactive même avec plusieurs centaines d'enregistrements
+
+### Métier
+- Une seule mesure par jour (si une mesure existe déjà pour une date, proposer de la modifier ou remplacer)
+- Validation : La quantité doit être >= 0 et raisonnable (< 1000 mm par jour)
+- Dates : Seules les dates valides sont acceptées (pas de dates futures trop éloignées, validation de format)
+
+### Temps/Ressources
+- Interface simple et intuitive
+- Pas de fonctionnalités avancées dans cette première version (pas d'édition, pas de suppression pour l'instant)
+
+## Critères d'Acceptation
+
+- [ ] L'utilisateur peut saisir une date (sélection ou saisie manuelle)
+- [ ] L'utilisateur peut saisir une quantité de pluie en mm (nombre décimal)
+- [ ] Les données sont validées avant enregistrement (date valide, quantité >= 0)
+- [ ] Les données sont stockées dans une base SQLite
+- [ ] Le tableau affiche toutes les mesures avec date et quantité
+- [ ] Le tableau est trié par date décroissante (plus récentes en premier)
+- [ ] Le graphique affiche l'évolution de la pluviométrie
+- [ ] Le graphique a des axes clairement labellés (dates en X, mm en Y)
+- [ ] Après une nouvelle saisie, le tableau et le graphique se mettent à jour automatiquement
+- [ ] L'application gère le cas où aucune mesure n'existe encore (affichage vide avec message)
+- [ ] L'application gère les erreurs de saisie avec des messages clairs
+- [ ] Les données persistent après fermeture de l'application
+
+## Métriques de Succès
+
+- **Temps de saisie** : < 30 secondes pour enregistrer une mesure
+- **Temps de chargement** : < 2 secondes pour afficher le tableau et le graphique
+- **Fiabilité** : 100% des données saisies sont correctement enregistrées
+- **Expérience utilisateur** : Interface intuitive, pas besoin de documentation pour utiliser
+
+## Spécifications Techniques
+
+### Données
+
+**Structure de la table SQLite :**
+```sql
+CREATE TABLE rainfall_entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL UNIQUE,
+    amount REAL NOT NULL CHECK(amount >= 0),
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Validation des données :**
+- `date` : Format ISO 8601 (YYYY-MM-DD), date valide, pas de date future > aujourd'hui + 1 jour
+- `amount` : Nombre réel >= 0, maximum 1000 mm (valeur suspecte à valider)
+- Gestion des doublons : Si une date existe déjà, proposer de remplacer ou rejeter
+
+### Interface Utilisateur
+
+**Composants requis :**
+1. **Formulaire de saisie** :
+   - Champ date (date picker ou input date)
+   - Champ quantité (input number, step 0.1, min 0)
+   - Bouton de validation
+   - Message de confirmation/erreur
+
+2. **Tableau des saisies** :
+   - Colonnes : Date, Quantité (mm)
+   - Tri par date décroissante
+   - Affichage formaté (dates lisibles, nombres avec 1 décimale)
+   - Message si aucune donnée
+
+3. **Graphique** :
+   - Type : Ligne ou barres (à déterminer selon préférence)
+   - Axe X : Dates
+   - Axe Y : Quantités en mm
+   - Labels clairs sur les axes
+   - Message si aucune donnée
+
+**Layout :**
+- Formulaire en haut ou dans une section dédiée
+- Tableau et graphique côte à côte ou l'un sous l'autre
+- Design responsive et clair
+
+### Performance
+
+- Chargement initial : < 2 secondes
+- Mise à jour après saisie : < 1 seconde
+- Support de 1000+ enregistrements sans ralentissement notable
+
+## Dépendances
+
+- Bibliothèque SQLite (selon technologie choisie)
+- Bibliothèque de graphiques (Chart.js, D3.js, Recharts, etc. selon framework)
+- Framework UI (à déterminer par l'architecte)
+
+## Notes Additionnelles
+
+- Cette fonctionnalité est la base de l'application
+- Les fonctionnalités d'édition et suppression pourront être ajoutées dans une version ultérieure
+- Le choix du framework UI sera fait par l'architecte
+- La base SQLite sera créée automatiquement au premier lancement si elle n'existe pas
+- Le fichier SQLite sera nommé `pluvio.db` et placé dans le répertoire de l'application
+
+## Historique
+
+- 2026-01-17 - Création du document par le Product Manager

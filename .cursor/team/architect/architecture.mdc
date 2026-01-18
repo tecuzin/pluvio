@@ -161,38 +161,133 @@ Presentation Layer (Display)
 
 ## Choix Technologiques
 
-### À Définir
+### Décisions Architecturales (2026-01-17)
 
-- **Langage/Framework Frontend** : React, Vue, Angular, ou autre ?
-- **Langage Backend** : Node.js, Python, ou autre ?
-- **Stockage** : LocalStorage, IndexedDB, Fichiers JSON, Base de données ?
-- **Tests** : Jest, Vitest, Playwright, Cypress ?
-- **Build Tool** : Vite, Webpack, ou autre ?
+Pour la première fonctionnalité (saisie et visualisation de pluviométrie), les choix suivants ont été validés :
 
-### Critères de Sélection
+#### Stack Technique
 
-1. **Simplicité** : Facile à comprendre et maintenir
-2. **Performance** : Répond aux besoins de performance
-3. **Écosystème** : Bon support et communauté
-4. **Testabilité** : Facile à tester
-5. **Évolutivité** : Peut grandir avec le projet
+- **Langage** : TypeScript
+  - Typage statique pour la sécurité et la maintenabilité
+  - Supporté par tous les frameworks modernes
+  - Facilite la détection d'erreurs à la compilation
+
+- **Frontend** : React 18+ avec TypeScript
+  - Framework mature et largement adopté
+  - Excellent écosystème de tests
+  - Composants réutilisables et modulaires
+  - Bonne performance pour des applications de taille moyenne
+
+- **Backend/Runtime** : Node.js avec TypeScript
+  - Cohérent avec le frontend (même langage)
+  - Accès natif à SQLite via `better-sqlite3` ou `sql.js`
+  - Peut évoluer vers une API REST si nécessaire
+
+- **Stockage** : SQLite
+  - Base de données légère et embarquée
+  - Pas besoin de serveur de base de données séparé
+  - Fichier local `pluvio.db`
+  - Support des transactions
+  - Bibliothèque : `better-sqlite3` (synchrone, performante) ou `sql.js` (pour le web)
+
+- **Graphiques** : Recharts
+  - Bibliothèque React native
+  - Simple à utiliser et bien documentée
+  - Support TypeScript
+  - Alternatives considérées : Chart.js (plus lourd), Victory (plus complexe)
+
+- **Tests** :
+  - **Unitaires/Intégration** : Jest + React Testing Library
+  - **E2E** : Playwright
+  - **Couverture** : Jest coverage
+
+- **Build Tool** : Vite
+  - Rapide et moderne
+  - Excellent support TypeScript
+  - Hot Module Replacement (HMR) pour le développement
+  - Build optimisé pour la production
+
+- **Gestionnaire de paquets** : npm ou pnpm
+  - npm : standard, bien supporté
+  - pnpm : plus rapide, économise l'espace disque
+
+#### Structure du Projet
+
+```
+pluvio/
+├── src/
+│   ├── domain/              # Domain Layer
+│   │   ├── entities/
+│   │   │   └── RainfallEntry.ts
+│   │   ├── repositories/
+│   │   │   └── IRainfallRepository.ts
+│   │   └── validators/
+│   │       └── RainfallValidator.ts
+│   ├── application/         # Application Layer
+│   │   └── use-cases/
+│   │       ├── LogRainfallUseCase.ts
+│   │       └── GetRainfallEntriesUseCase.ts
+│   ├── infrastructure/      # Infrastructure Layer
+│   │   └── repositories/
+│   │       └── SQLiteRainfallRepository.ts
+│   └── presentation/        # Presentation Layer
+│       ├── components/
+│       │   ├── RainfallForm.tsx
+│       │   ├── RainfallTable.tsx
+│       │   └── RainfallChart.tsx
+│       └── App.tsx
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+├── pluvio.db                # Base SQLite (générée)
+└── package.json
+```
+
+### Critères de Sélection Appliqués
+
+1. **Simplicité** : ✅ Stack moderne mais simple, TypeScript pour la clarté
+2. **Performance** : ✅ Vite pour le build rapide, SQLite pour le stockage efficace
+3. **Écosystème** : ✅ React et Node.js ont d'excellents écosystèmes
+4. **Testabilité** : ✅ Jest et React Testing Library sont des standards
+5. **Évolutivité** : ✅ Architecture modulaire permet d'ajouter facilement des fonctionnalités
 
 ## Dépendances
 
-### Dépendances Externes (à définir)
+### Dépendances Externes (Définies)
 
-- Framework UI (si nécessaire)
-- Bibliothèque de validation
-- Bibliothèque de dates
-- Bibliothèque de graphiques
-- Outils de test
+#### Production
+
+- **react** : ^18.2.0 - Framework UI
+- **react-dom** : ^18.2.0 - Rendu React
+- **better-sqlite3** : ^9.x - Client SQLite (ou sql.js pour web)
+- **recharts** : ^2.x - Bibliothèque de graphiques
+- **date-fns** : ^2.x - Manipulation de dates (légère et moderne)
+
+#### Développement
+
+- **typescript** : ^5.x - Langage
+- **@types/react** : ^18.x - Types React
+- **@types/node** : ^20.x - Types Node.js
+- **vite** : ^5.x - Build tool
+- **@vitejs/plugin-react** : ^4.x - Plugin React pour Vite
+
+#### Tests
+
+- **jest** : ^29.x - Framework de tests
+- **@testing-library/react** : ^14.x - Tests React
+- **@testing-library/jest-dom** : ^6.x - Matchers DOM
+- **playwright** : ^1.x - Tests E2E
+- **@types/jest** : ^29.x - Types Jest
 
 ### Gestion des Dépendances
 
-- Utiliser un gestionnaire de paquets (npm, yarn, pip, etc.)
-- Documenter toutes les dépendances
-- Maintenir les versions à jour
+- Utiliser npm ou pnpm comme gestionnaire de paquets
+- Documenter toutes les dépendances dans `package.json`
+- Utiliser des versions exactes pour les dépendances critiques (^ pour les mineures)
+- Maintenir les dépendances à jour régulièrement
 - Éviter les dépendances inutiles
+- Auditer régulièrement avec `npm audit`
 
 ## Évolutivité
 
