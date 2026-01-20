@@ -15,14 +15,14 @@
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.2.3",
     "sql.js": "^1.10.3",
     "recharts": "^2.10.3",
     "date-fns": "^3.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
+    "@types/react-dom": "^19.2.3",
     "@types/node": "^25.0.9",
     "@types/sql.js": "^1.4.8",
     "@types/jest": "^30.0.0",
