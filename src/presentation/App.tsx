@@ -5,6 +5,11 @@ import { RainfallChart } from './components/RainfallChart';
 import { RainfallEntry } from '@domain/entities/RainfallEntry';
 import { RainfallService } from '@infrastructure/services/RainfallService';
 import { SQLiteRainfallRepository } from '@infrastructure/repositories/SQLiteRainfallRepository';
+import {
+  generateCsvContent,
+  generateExportFilename,
+  downloadCsv,
+} from '@application/use-cases/ExportRainfallToCsvUseCase';
 
 // Initialiser le service avec le repository
 // Le repository s'initialise de manière asynchrone, donc on le fait dans un useEffect
@@ -15,6 +20,7 @@ function App() {
   const [entries, setEntries] = useState<RainfallEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Initialiser le repository et le service au montage
   useEffect(() => {
@@ -59,6 +65,20 @@ function App() {
     await loadEntries();
   };
 
+  const handleExportCsv = () => {
+    setIsExporting(true);
+    try {
+      const csvContent = generateCsvContent(entries);
+      const filename = generateExportFilename();
+      downloadCsv(csvContent, filename);
+    } catch (err) {
+      setError('Erreur lors de l\'export CSV');
+      console.error(err);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   if (isLoading) {
     return <div className="app-loading">Chargement...</div>;
   }
@@ -78,7 +98,17 @@ function App() {
 
         <div className="data-section">
           <div className="table-section">
-            <RainfallTable entries={entries} />
+            <div className="table-header">
+              <RainfallTable entries={entries} />
+              <button
+                className="export-button"
+                onClick={handleExportCsv}
+                disabled={isExporting}
+                aria-label="Exporter les données en CSV"
+              >
+                {isExporting ? 'Export en cours...' : 'Exporter CSV'}
+              </button>
+            </div>
           </div>
 
           <div className="chart-section">

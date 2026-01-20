@@ -16,6 +16,6 @@ export default defineConfig({
     port: 3000,
   },
   optimizeDeps: {
-    exclude: ['sql.js'],
+    include: ['sql.js'],
   },
 });

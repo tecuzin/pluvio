@@ -81,6 +81,7 @@ Application de logging quotidien de la pluviométrie avec architecture modulaire
 - `LogRainfallUseCase` : Cas d'usage pour enregistrer une pluviométrie
 - `GetRainfallStatsUseCase` : Cas d'usage pour obtenir des statistiques
 - `ExportRainfallDataUseCase` : Cas d'usage pour exporter les données
+- `ExportRainfallToCsvUseCase` : Cas d'usage pour exporter les données au format CSV
 
 **Règles :**
 - Dépend uniquement de la couche Domain

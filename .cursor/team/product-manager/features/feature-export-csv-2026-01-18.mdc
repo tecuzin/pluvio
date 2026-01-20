@@ -1,0 +1,99 @@
+---
+feature: Export CSV
+date: 2026-01-18
+priority: medium
+status: approved
+---
+
+# Règles de Fonctionnalité : Export CSV
+
+## Description
+
+Permettre à l'utilisateur d'exporter les données de pluviométrie enregistrées au format CSV via un bouton dans l'interface.
+
+## Objectifs Métier
+
+- Permettre la sauvegarde locale des données en format standard
+- Faciliter l'analyse des données dans des outils externes (Excel, LibreOffice, etc.)
+- Offrir une solution de backup simple pour l'utilisateur
+
+## Cas d'Usage
+
+### Cas d'usage 1 : Export des données existantes
+**Acteur** : Utilisateur
+**Préconditions** : Des enregistrements de pluviométrie existent dans l'application
+**Scénario** :
+1. L'utilisateur consulte la page principale de l'application
+2. L'utilisateur clique sur le bouton "Exporter CSV"
+3. Le système génère un fichier CSV avec toutes les données
+4. Le navigateur télécharge automatiquement le fichier
+**Résultat attendu** : Un fichier CSV est téléchargé contenant toutes les entrées de pluviométrie
+
+### Cas d'usage 2 : Export sans données
+**Acteur** : Utilisateur
+**Préconditions** : Aucun enregistrement n'existe dans l'application
+**Scénario** :
+1. L'utilisateur clique sur le bouton "Exporter CSV"
+2. Le système génère un fichier CSV avec uniquement les en-têtes
+**Résultat attendu** : Un fichier CSV est téléchargé avec les en-têtes mais sans données
+
+## Contraintes
+
+### Techniques
+- Le fichier doit être généré côté client (pas de serveur requis)
+- Le format CSV doit être compatible avec Excel et LibreOffice
+- L'encodage doit être UTF-8 avec BOM pour la compatibilité Excel
+
+### Métier
+- Toutes les données visibles dans le tableau doivent être exportées
+- L'ordre des données doit correspondre à l'affichage (date décroissante)
+
+### Temps/Ressources
+- Fonctionnalité simple, pas de dépendance externe requise
+
+## Critères d'Acceptation
+
+- [ ] Un bouton "Exporter CSV" est visible dans l'interface
+- [ ] Le clic sur le bouton déclenche le téléchargement d'un fichier CSV
+- [ ] Le fichier CSV contient les colonnes : Date, Quantité (mm), Localisation, Notes
+- [ ] Les données sont séparées par des points-virgules (;) pour compatibilité Excel FR
+- [ ] Le fichier est encodé en UTF-8 avec BOM
+- [ ] Le nom du fichier inclut la date d'export : `pluvio-export-YYYY-MM-DD.csv`
+- [ ] Le bouton est désactivé pendant la génération (feedback visuel)
+- [ ] Le bouton fonctionne même si aucune donnée n'existe (export des en-têtes seuls)
+
+## Métriques de Succès
+
+- **Utilisabilité** : Export réussi en moins de 2 secondes
+- **Compatibilité** : Fichier ouvrable sans erreur dans Excel et LibreOffice
+
+## Spécifications Techniques
+
+### Données
+- Colonnes CSV : `Date;Quantité (mm);Localisation;Notes`
+- Format date : `YYYY-MM-DD`
+- Séparateur : `;` (point-virgule)
+- Encodage : UTF-8 avec BOM (`\uFEFF`)
+
+### Interface Utilisateur
+- Bouton placé près du tableau de données
+- Icône de téléchargement optionnelle
+- Texte : "Exporter CSV"
+- État désactivé pendant l'export avec indication visuelle
+
+### Performance
+- Génération instantanée pour moins de 10 000 entrées
+
+## Dépendances
+
+- Fonctionnalité de récupération des données existante (`GetRainfallEntriesUseCase`)
+- Composant `App.tsx` pour l'intégration du bouton
+
+## Notes Additionnelles
+
+- Pas besoin de bibliothèque externe, utilisation de l'API Blob native
+- Le téléchargement utilise un lien `<a>` créé dynamiquement
+
+## Historique
+
+- 2026-01-18 - Création du document
