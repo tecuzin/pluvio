@@ -14,13 +14,23 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "date-fns": "^3.0.0",
     "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.10.3",
+    "sql.js": "^1.10.3"
     "react-dom": "^19.2.3",
     "sql.js": "^1.10.3",
     "recharts": "^2.10.3",
     "date-fns": "^4.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^19.2.3",
     "@types/node": "^25.0.9",
@@ -35,6 +45,7 @@
     "vite": "^5.0.8",
     "jest": "^30.2.0",
     "ts-jest": "^29.1.1",
-    "@types/node": "^20.10.5"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8"
   }
 }

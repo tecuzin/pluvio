@@ -1,0 +1,74 @@
+---
+feature: Enabler - Tests E2E Playwright
+date: 2026-01-18
+priority: high
+status: approved
+type: enabler
+---
+
+# Enabler Technique : Implémentation des Tests E2E Playwright
+
+## Description
+
+Créer l'infrastructure de tests E2E avec Playwright pour valider les fonctionnalités de l'application Pluvio. Cet enabler technique permet de mettre en place les tests automatisés définis par le QA.
+
+## Objectifs Techniques
+
+- Mettre en place le dossier `tests/e2e/` avec la structure appropriée
+- Implémenter les tests E2E pour la fonctionnalité "Core Logging" (saisie et visualisation)
+- Implémenter les tests E2E pour la fonctionnalité "Export CSV"
+- Assurer que tous les tests passent avec `npm run test:e2e`
+
+## Périmètre
+
+### Tests Core Logging (e2e-core-logging-2026-01-17.md)
+- E2E-001 : Saisir une nouvelle mesure
+- E2E-002 : Consulter l'historique
+- E2E-003 : Visualiser le graphique
+- E2E-004 : Saisir pour date passée
+- E2E-005 : Saisir 0 mm
+- E2E-006 : Rejeter quantité négative (validation HTML5)
+- E2E-008 : Affichage état vide
+
+### Tests Export CSV (e2e-export-csv-2026-01-18.md)
+- E2E-CSV-001 : Export avec données
+- E2E-CSV-002 : Export sans données
+- E2E-CSV-003 : Vérification format CSV
+
+## Contraintes Techniques
+
+- Utiliser Playwright (déjà configuré dans `playwright.config.ts`)
+- Le serveur de dev doit tourner sur `http://localhost:3000`
+- Les tests doivent être isolés (pas de dépendance entre tests)
+- Utiliser `localStorage.clear()` pour réinitialiser les données entre tests
+
+## Critères d'Acceptation
+
+- [ ] Le dossier `tests/e2e/` existe avec les fichiers de tests
+- [ ] `npm run test:e2e` exécute tous les tests E2E
+- [ ] Tous les tests passent
+- [ ] Les tests couvrent les scénarios définis par le QA
+
+## Spécifications Techniques
+
+### Structure des fichiers
+```
+tests/e2e/
+├── core-logging.spec.ts    # Tests de saisie et visualisation
+└── export-csv.spec.ts      # Tests d'export CSV
+```
+
+### Configuration Playwright
+- testDir: `./tests/e2e`
+- baseURL: `http://localhost:3000`
+- webServer: `npm run dev`
+
+## Dépendances
+
+- Spécifications QA : `.cursor/team/qa/tests/e2e-core-logging-2026-01-17.md`
+- Spécifications QA : `.cursor/team/qa/tests/e2e-export-csv-2026-01-18.md`
+- Configuration : `playwright.config.ts`
+
+## Historique
+
+- 2026-01-18 - Création de l'enabler technique

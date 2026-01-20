@@ -1,4 +1,5 @@
-import initSqlJs, { Database } from 'sql.js';
+import initSqlJs from 'sql.js';
+import type { Database } from 'sql.js';
 import { IRainfallRepository } from '@domain/repositories/IRainfallRepository';
 import { RainfallEntry } from '@domain/entities/RainfallEntry';
 

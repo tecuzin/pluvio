@@ -187,6 +187,34 @@ header h1 {
   background-color: #f8f9fa;
 }
 
+/* Bouton d'export */
+.table-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.export-button {
+  margin-top: 15px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+}
+
+.export-button:hover:not(:disabled) {
+  background-color: #219a52;
+}
+
+.export-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
 /* Graphique */
 .rainfall-chart {
   min-height: 400px;
